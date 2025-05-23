@@ -3,14 +3,10 @@ import { useHeaderSearchBar } from '~/lib/useHeaderSearchBar';
 import { ContactCard } from '~/components/ContactCard';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
-
-export interface Contact {
-  id: string;
-  name: string;
-}
+import { useContactStore } from '~/store/contactStore';
 
 export default function TabOne() {
-  const contacts: Contact[] = [{ id: "1", name: 'Adam' }, { id: "2", name: 'Eve' },];
+  const { contacts } = useContactStore();
   const searchValue = useHeaderSearchBar({ hideWhenScrolling: contacts.length === 0 });
 
   const data = searchValue
