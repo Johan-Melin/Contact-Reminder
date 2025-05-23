@@ -1,4 +1,4 @@
-import { View, FlatList, Pressable } from 'react-native';
+import { View, FlatList, Pressable, SafeAreaView } from 'react-native';
 import { useHeaderSearchBar } from '~/lib/useHeaderSearchBar';
 import { ContactCard } from '~/components/ContactCard';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,20 +14,26 @@ export default function TabOne() {
     : contacts;
 
   return (
-    <View className="flex-1 p-4">
-      <FlatList 
-        data={data} 
-        renderItem={({ item }) => <ContactCard contact={item} />}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View className="h-4" />}
-      />
-      <Link href="/setContact" asChild
-        className="absolute bottom-8 right-8"
-      >
-        <Pressable className="bg-primary rounded-full w-16 h-16 items-center justify-center shadow-sm">
-          <Ionicons name="add" size={36} color="white" />
-        </Pressable>
-      </Link>
-    </View>
+    <SafeAreaView className="flex-1">
+      <View className="flex-1 p-4">
+        <FlatList 
+          data={data} 
+          renderItem={({ item }) => (
+            <Link href={`/setContact?id=${item.id}&name=${item.name}`} asChild>
+              <ContactCard contact={item} />
+            </Link>
+          )}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View className="h-4" />}
+        />
+        <Link href="/setContact" asChild
+          className="absolute bottom-8 right-8"
+        >
+          <Pressable className="bg-primary rounded-full w-16 h-16 items-center justify-center shadow-sm">
+            <Ionicons name="add" size={36} color="white" />
+          </Pressable>
+        </Link>
+      </View>
+    </SafeAreaView>
   );
 }

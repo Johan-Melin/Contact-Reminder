@@ -1,5 +1,5 @@
 import React, { JSX } from 'react';
-import { ScrollView, View, Pressable, Appearance } from 'react-native';
+import { ScrollView, View, Pressable, SafeAreaView } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
@@ -8,16 +8,18 @@ import { useThemeStore, Theme } from '~/store/themeStore';
 function Card({ children }: { children: React.ReactNode }) {
   const items = React.Children.toArray(children);
   return (
-    <View className="rounded-xl border border-border bg-card p-2 px-4 shadow-sm shadow-black/10 dark:shadow-none">
-      {items.map((child, idx) => (
-        <React.Fragment key={idx}>
-          {child}
-          {idx < items.length - 1 && (
-            <View className="border-b border-border my-1" />
-          )}
-        </React.Fragment>
-      ))}
+    <SafeAreaView>
+      <View className="rounded-xl border border-border bg-card p-2 px-4 shadow-sm shadow-black/10 dark:shadow-none">
+        {items.map((child, idx) => (
+          <React.Fragment key={idx}>
+            {child}
+            {idx < items.length - 1 && (
+              <View className="border-b border-border my-1" />
+            )}
+          </React.Fragment>
+        ))}
     </View>
+    </SafeAreaView>
   );
 }
 
