@@ -1,8 +1,9 @@
 import React, { JSX } from 'react';
-import { ScrollView, View, Pressable } from 'react-native';
+import { ScrollView, View, Pressable, Appearance } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { Ionicons } from '@expo/vector-icons';
-import { useColorScheme } from '~/lib/useColorScheme';
+import { useColorScheme } from 'nativewind';
+import { useThemeStore, Theme } from '~/store/themeStore';
 
 function Card({ children }: { children: React.ReactNode }) {
   const items = React.Children.toArray(children);
@@ -21,9 +22,16 @@ function Card({ children }: { children: React.ReactNode }) {
 }
 
 export default function SettingsScreen(): JSX.Element {
-  const { colorScheme, setColorScheme, colors } = useColorScheme();
+  const { setColorScheme } = useColorScheme();
+  const { theme, setTheme } = useThemeStore();
+  const handlePress = (key: Theme) => {
+    setTheme(key);
+    setColorScheme(key);
+  };
+  type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
-  const options = [
+  const options: { key: Theme; icon: IoniconName; label: string }[] = [
+    { key: 'system', icon: 'contrast', label: 'System' },
     { key: 'light', icon: 'sunny-outline', label: 'Light' },
     { key: 'dark', icon: 'moon-outline', label: 'Dark' },
   ];
@@ -35,20 +43,20 @@ export default function SettingsScreen(): JSX.Element {
         {options.map(option => (
           <Pressable
             key={option.key}
-            onPress={() => setColorScheme(option.key as 'dark' | 'light' | 'dark')}
+            onPress={() => handlePress(option.key)}
             className="flex-row items-center py-2"
           >
             <Ionicons
-              name={option.icon as any}
+              name={option.icon as IoniconName}
               size={24}
               style={{ marginRight: 12 }}
-              color={colorScheme === option.key ? '#6366F1' : colors.grey}
+              color={theme === option.key ? '#6366F1' : 'gray'}
             />
             <Text className="flex-1" variant="body">{option.label}</Text>
             <Ionicons
-              name={colorScheme === option.key ? 'radio-button-on' : 'radio-button-off'}
+              name={theme === option.key ? 'radio-button-on' : 'radio-button-off'}
               size={22}
-              color={colorScheme === option.key ? '#6366F1' : colors.grey}
+              color={theme  === option.key ? '#6366F1' : 'gray'}
             />
           </Pressable>
         ))}
