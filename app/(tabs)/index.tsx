@@ -5,51 +5,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useContactStore } from '~/store/contactStore';
 import { Text } from '~/components/nativewindui/Text';
+import { groupContactsByRecency } from '~/lib/contactUtils';
 
-export default function TabOne() {
+export default function Contacts() {
   const { contacts } = useContactStore();
   const searchValue = useHeaderSearchBar({ hideWhenScrolling: contacts.length === 0 });
 
-  const data = searchValue
+  // Filter contacts based on search
+  const filteredContacts = searchValue
     ? contacts.filter((c) => c.name.toLowerCase().includes(searchValue.toLowerCase()))
     : contacts;
 
-    const hasContacts = data.length > 0;
-
-    const sortedContacts = [...data].sort((a, b) => {
-      if (a.lastContact && b.lastContact) {
-        return new Date(b.lastContact).getTime() - new Date(a.lastContact).getTime();
-      }
-      if (a.lastContact) return -1;
-      if (b.lastContact) return 1;
-      return 0;
-    });
-  
-    const now = new Date();
-    const oneWeek = 7 * 24 * 60 * 60 * 1000;
-    const oneMonth = 30 * 24 * 60 * 60 * 1000;
-  
-    const weekContacts = sortedContacts.filter(c =>
-      c.lastContact && (now.getTime() - new Date(c.lastContact).getTime()) < oneWeek
-    );
-    const monthContacts = sortedContacts.filter(c =>
-      c.lastContact &&
-      (now.getTime() - new Date(c.lastContact).getTime()) >= oneWeek &&
-      (now.getTime() - new Date(c.lastContact).getTime()) < oneMonth
-    );
-    const olderContacts = sortedContacts.filter(c =>
-      c.lastContact && (now.getTime() - new Date(c.lastContact).getTime()) >= oneMonth
-    );
-    const neverContacts = sortedContacts.filter(c => !c.lastContact);
-  
-    const rawSections = [
-      { title: "Contacted last 7 days", data: weekContacts },
-      { title: "Contacted last 30 days", data: monthContacts },
-      { title: "Older than 30 days", data: olderContacts },
-      { title: "No Last Contact Date", data: neverContacts },
-    ];
-    
-    const sections = rawSections.filter(section => section.data.length > 0);  
+  // Get grouped and sorted contacts
+  const sections = groupContactsByRecency(filteredContacts);
+  const hasContacts = contacts.length > 0;
 
   return (
     <SafeAreaView className="flex-1">
