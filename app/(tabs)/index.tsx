@@ -1,4 +1,4 @@
-import { View, SectionList, Pressable, SafeAreaView } from 'react-native';
+import { View, SectionList, Pressable, SafeAreaView, Image } from 'react-native';
 import { useHeaderSearchBar } from '~/lib/useHeaderSearchBar';
 import { ContactCard } from '~/components/ContactCard';
 import { Ionicons } from '@expo/vector-icons';
@@ -54,6 +54,7 @@ export default function TabOne() {
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 p-4">
+        {hasContacts ? (
         <SectionList 
           sections={sections}
           renderItem={({ item }) => (
@@ -70,6 +71,16 @@ export default function TabOne() {
           SectionSeparatorComponent={() => <View className="h-4" />}
           ItemSeparatorComponent={() => <View className="h-4" />}
         />
+        ) : (
+          <View>
+            <Image
+              source={require('~/assets/undraw_conversation.webp')}
+              className="w-full h-80"
+              resizeMode="contain"
+            />
+            <Text className="text-lg font-semibold mt-4 text-center">No contacts yet? Add friends, family, or colleagues to stay connected!</Text>
+          </View>
+        )}
         <Link href="/setContact" asChild
           className="absolute bottom-8 right-8"
         >
