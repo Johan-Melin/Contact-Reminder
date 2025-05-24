@@ -6,7 +6,7 @@ export const ContactCard = ({ contact, ...props }: { contact: any }) => {
   return (
     <Pressable {...props} style={{elevation: 8 }} className="shadow-sm rounded-xl p-4 bg-card flex-row items-center">
       <Avatar alt={contact.name}>
-        <AvatarFallback className="bg-primary">
+        <AvatarFallback className="bg-indigo-300">
           <Text className="text-2xl text-white">{contact.name.charAt(0).toUpperCase()}</Text>
         </AvatarFallback>
       </Avatar>
