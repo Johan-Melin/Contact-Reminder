@@ -113,13 +113,17 @@ export default function Modal() {
                   mode="date"
                   onChange={(ev) => setDate(new Date(ev.nativeEvent.timestamp))}
                 />
-                <Button title="Clear Date" onPress={() => { setDate(null); setShowDatePicker(false); }} />
+                <Pressable onPress={() => { setShowDatePicker(false); }} className="justify-center">
+                  <Text variant="heading" className="text-blue-500 ml-2">Clear Date</Text>
+                </Pressable>
               </View>
             ) : (
-              <Button title="Set Last Contact Date" onPress={() => {
+              <Pressable onPress={() => {
                 setShowDatePicker(true);
                 setDate(new Date());
-              }}/>
+              }}>
+                <Text variant="heading" className="text-blue-500">Set Last Contact Date</Text>
+              </Pressable>
             )}
           </View>
           <StyledButton title="Save" onPress={handleSave} className="w-full"/>
