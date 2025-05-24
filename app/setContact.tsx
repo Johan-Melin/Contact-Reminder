@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { View, TextInput, Text, Platform, Pressable } from 'react-native';
+import { View, TextInput, Text, Platform, Pressable, SafeAreaView, Switch, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useContactStore } from '~/store/contactStore';
 import { useRouter } from 'expo-router';
-import { Button } from '~/components/Button';
+import { Button as StyledButton } from '~/components/Button';
 import { Stack } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
+import { DatePicker } from '~/components/nativewindui/DatePicker';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
 export default function Modal() {
   const {contacts, addContact, updateContact, removeContact} = useContactStore(state => ({
@@ -18,10 +20,16 @@ export default function Modal() {
   const router = useRouter();
 
   const { id, name: initialName } = useLocalSearchParams<{ id?: string; name?: string }>();
-  const [name, setName] = useState(initialName || '');
   const isEditing = !!id;
+  const editingContact = isEditing ? contacts.find(c => c.id === id) : undefined;
+  const [name, setName] = useState(initialName || (editingContact?.name ?? ''));
+  const [shouldContact, setShouldContact] = useState(editingContact?.shouldContact ?? false);
+  const [date, setDate] = useState<Date | null>(
+    editingContact?.lastContact ? new Date(editingContact.lastContact) : null
+  );
+  const [showDatePicker, setShowDatePicker] = useState(!!date);
 
-  const handleAdd = () => {
+  const handleSave = () => {
     if (name.trim() === '') {
       setWarning('Name cannot be empty');
       return;
@@ -40,11 +48,12 @@ export default function Modal() {
     }
     
     if (isEditing) {
-      updateContact(id, name);
+      updateContact(id, name, shouldContact, date ?? undefined);
     } else {
-      addContact(name);
+      addContact(name, shouldContact, date ?? undefined);
     }
     setName('');
+    setShouldContact(false);
     setWarning('');
     router.back(); // Close modal
   };
@@ -55,29 +64,72 @@ export default function Modal() {
     router.back(); // Close modal
   };
 
+  const { showActionSheetWithOptions } = useActionSheet();
+
+  const handleDeleteButtonPress = () => {
+    showActionSheetWithOptions(
+      {
+        options: ['Delete this contact', 'Cancel'],
+        cancelButtonIndex: 1,
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          handleDelete();
+        }
+      }
+    );
+  };
+
   return (
     <>
       <Stack.Screen options={{ title: isEditing ? 'Edit Contact' : 'Add Contact' }} />
-      <View className="flex-1 p-6 bg-white">
-        <Text className='text-lg font-semibold mb-2'>Name</Text>
-        <TextInput
-          className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded"
-          placeholder={'Enter name'}
-          value={name}
-          onChangeText={text => { setName(text); setWarning(''); }}
-          autoFocus
-        />
-        {warning ? (
-          <Text className="text-red-500 mb-2">{warning}</Text>
-        ) : null}
-        <Button title="Save" onPress={handleAdd} className="w-full"/>
-        {isEditing && (
-          <Pressable onPress={handleDelete} className="w-full items-center p-4">
-            <Text className="text-red-500 text-lg">Delete</Text>
-          </Pressable>
-        )}
-        <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-      </View>
+      <SafeAreaView>
+        <View className="p-6 bg-gray-100">
+          <Text className='text-lg font-semibold mb-2'>Name</Text>
+          <TextInput
+            className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded"
+            placeholder={'Enter name'}
+            value={name}
+            onChangeText={text => { setName(text); setWarning(''); }}
+            autoFocus
+          />
+          {warning ? (
+            <Text className="text-red-500 mb-2">{warning}</Text>
+          ) : null}
+          <View className="flex-row items-center mb-4">
+            <Switch
+              value={shouldContact}
+              onValueChange={setShouldContact}
+            />
+            <Text className="ml-2">Should Contact Soon</Text>
+          </View>
+          <View className="mb-4">
+            <Text className='text-lg font-semibold mb-2'>Last Contact</Text>
+            {showDatePicker ? (
+              <View className="flex-row">
+                <DatePicker
+                  value={date || new Date()}
+                  mode="date"
+                  onChange={(ev) => setDate(new Date(ev.nativeEvent.timestamp))}
+                />
+                <Button title="Clear Date" onPress={() => { setDate(null); setShowDatePicker(false); }} />
+              </View>
+            ) : (
+              <Button title="Set Last Contact Date" onPress={() => {
+                setShowDatePicker(true);
+                setDate(new Date());
+              }}/>
+            )}
+          </View>
+          <StyledButton title="Save" onPress={handleSave} className="w-full"/>
+          {isEditing && (
+            <Pressable onPress={handleDeleteButtonPress} className="w-full items-center p-4">
+              <Text className="text-red-500 text-lg">Delete</Text>
+            </Pressable>
+          )}
+          <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+        </View>
+      </SafeAreaView>
     </>
   );
 }
