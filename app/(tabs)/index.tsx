@@ -18,11 +18,15 @@ export default function Contacts() {
 
   // Get grouped and sorted contacts
   const sections = groupContactsByRecency(filteredContacts);
+  const hasSearchResults = filteredContacts.length > 0;
   const hasContacts = contacts.length > 0;
 
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 p-4">
+        {searchValue && !hasSearchResults ? (
+          <Text className="text-lg font-semibold">No results for "{searchValue}"</Text>
+        ) : null}
         {hasContacts ? (
         <SectionList 
           sections={sections}
