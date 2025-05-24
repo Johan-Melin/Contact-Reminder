@@ -14,9 +14,9 @@ export default function TabOne() {
     ? contacts.filter((c) => c.name.toLowerCase().includes(searchValue.toLowerCase()))
     : contacts;
 
-    const hasContacts = contacts.length > 0;
+    const hasContacts = data.length > 0;
 
-    const sortedContacts = [...contacts].sort((a, b) => {
+    const sortedContacts = [...data].sort((a, b) => {
       if (a.lastContact && b.lastContact) {
         return new Date(b.lastContact).getTime() - new Date(a.lastContact).getTime();
       }
