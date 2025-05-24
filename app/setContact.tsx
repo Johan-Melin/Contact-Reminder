@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, TextInput, Text, Platform, Pressable, SafeAreaView, Switch, Button } from 'react-native';
+import { View, TextInput, Platform, Pressable, SafeAreaView, Switch, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useContactStore } from '~/store/contactStore';
 import { useRouter } from 'expo-router';
@@ -8,6 +8,7 @@ import { Stack } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { DatePicker } from '~/components/nativewindui/DatePicker';
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import { Text } from '~/components/nativewindui/Text';
 
 export default function Modal() {
   const {contacts, addContact, updateContact, removeContact} = useContactStore(state => ({
@@ -84,27 +85,27 @@ export default function Modal() {
     <>
       <Stack.Screen options={{ title: isEditing ? 'Edit Contact' : 'Add Contact' }} />
       <SafeAreaView>
-        <View className="p-6 bg-gray-100">
-          <Text className='text-lg font-semibold mb-2'>Name</Text>
+        <View className="p-6">
+          <Text variant="heading" className="mb-2">Name</Text>
           <TextInput
-            className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded"
+            className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded text-foreground"
             placeholder={'Enter name'}
             value={name}
             onChangeText={text => { setName(text); setWarning(''); }}
             autoFocus
           />
           {warning ? (
-            <Text className="text-red-500 mb-2">{warning}</Text>
+            <Text variant="body" className="text-red-500 mb-2">{warning}</Text>
           ) : null}
           <View className="flex-row items-center mb-4">
             <Switch
               value={shouldContact}
               onValueChange={setShouldContact}
             />
-            <Text className="ml-2">Should Contact Soon</Text>
+            <Text variant="heading" className="ml-2">Should Contact Soon</Text>
           </View>
           <View className="mb-4">
-            <Text className='text-lg font-semibold mb-2'>Last Contact</Text>
+            <Text variant="heading" className="mb-2">Last Contact</Text>
             {showDatePicker ? (
               <View className="flex-row">
                 <DatePicker
@@ -124,7 +125,7 @@ export default function Modal() {
           <StyledButton title="Save" onPress={handleSave} className="w-full"/>
           {isEditing && (
             <Pressable onPress={handleDeleteButtonPress} className="w-full items-center p-4">
-              <Text className="text-red-500 text-lg">Delete</Text>
+              <Text variant="heading" className="text-red-500">Delete</Text>
             </Pressable>
           )}
           <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />

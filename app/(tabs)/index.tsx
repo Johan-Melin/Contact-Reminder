@@ -25,7 +25,7 @@ export default function Contacts() {
     <SafeAreaView className="flex-1">
       <View className="flex-1 p-4">
         {searchValue && !hasSearchResults ? (
-          <Text className="text-lg font-semibold">No results for "{searchValue}"</Text>
+          <Text variant="title3">No results for "{searchValue}"</Text>
         ) : null}
         {hasContacts ? (
         <SectionList 
@@ -36,7 +36,7 @@ export default function Contacts() {
             </Link>
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <Text className="text-xl font-bold">
+            <Text variant="title3">
               {title}:
             </Text>
           )}
@@ -51,7 +51,7 @@ export default function Contacts() {
               className="w-full h-80"
               resizeMode="contain"
             />
-            <Text className="text-lg font-semibold mt-4 text-center">No contacts yet? Add friends, family, or colleagues to stay connected!</Text>
+            <Text variant="body" className="text-center">No contacts yet? Add friends, family, or colleagues to stay connected!</Text>
           </View>
         )}
         <Link href="/setContact" asChild
