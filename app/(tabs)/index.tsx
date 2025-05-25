@@ -88,21 +88,26 @@ export default function Contacts() {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="flex-1 p-4">
-        <TagBar 
-          tags={availableTags}
-          selectedTag={selectedTag.name}
-          onSelectTag={(tag) => setSelectedTag(tag as ContactType)}
-        />
-        <View className="h-4" />
-        {searchValue && !hasSearchResults ? (
-          <Text variant="title3">No results for "{searchValue}"</Text>
-        ) : null}
-        {hasContacts ? (
-          <SectionList 
-            stickySectionHeadersEnabled={false}
-            sections={visibleSections}
-            renderItem={({ item }) => (
+      <View className="flex-1">
+        <View className="p-4">
+          <TagBar 
+            tags={availableTags}
+            selectedTag={selectedTag.name}
+            onSelectTag={(tag) => setSelectedTag(tag as ContactType)}
+          />
+        </View>
+        <View className="flex-1">
+          {searchValue && !hasSearchResults ? (
+            <View className="px-4">
+              <Text variant="title3">No results for "{searchValue}"</Text>
+            </View>
+          ) : null}
+          {hasContacts ? (
+            <SectionList 
+              className="px-4"
+              stickySectionHeadersEnabled={false}
+              sections={visibleSections}
+              renderItem={({ item }) => (
               <Link href={`/setContact?id=${item.id}&name=${item.name}`} asChild>
                 <ContactCard contact={item} />
               </Link>
@@ -127,29 +132,30 @@ export default function Contacts() {
             ItemSeparatorComponent={() => <View className="h-4" />}
           />
         ) : (
-          <View className="items-center">
-            <Image
-              source={require('~/assets/undraw_conversation.webp')}
-              className="w-full h-80"
-              resizeMode="contain"
-            />
-            <Text variant="body" className="text-center">
-              {selectedTag.name === 'Untagged' 
-                ? 'No untagged contacts yet!'
-                : `No ${selectedTag.name.toLowerCase()} contacts yet!`}
-            </Text>
-            <Text variant="body" className="text-center">
-              Add friends, family, or colleagues to stay connected!
-            </Text>
-          </View>
-        )}
-        <Link href="/setContact" asChild
-          className="absolute bottom-8 right-8"
-        >
-          <Pressable className="bg-primary rounded-full w-16 h-16 items-center justify-center shadow-sm">
-            <Ionicons name="add" size={36} color="white" />
-          </Pressable>
-        </Link>
+            <View className="items-center">
+              <Image
+                source={require('~/assets/undraw_conversation.webp')}
+                className="w-full h-80"
+                resizeMode="contain"
+              />
+              <Text variant="body" className="text-center">
+                {selectedTag.name === 'Untagged' 
+                  ? 'No untagged contacts yet!'
+                  : `No ${selectedTag.name.toLowerCase()} contacts yet!`}
+              </Text>
+              <Text variant="body" className="text-center">
+                Add friends, family, or colleagues to stay connected!
+              </Text>
+            </View>
+          )}
+          <Link href="/setContact" asChild
+            className="absolute bottom-8 right-8"
+          >
+            <Pressable className="bg-primary rounded-full w-16 h-16 items-center justify-center shadow-sm">
+              <Ionicons name="add" size={36} color="white" />
+            </Pressable>
+          </Link>
+        </View>
       </View>
     </SafeAreaView>
   );
