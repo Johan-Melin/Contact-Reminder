@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 export default function Contacts() {
   const { contacts } = useContactStore();
-  const searchValue = useHeaderSearchBar({ hideWhenScrolling: contacts.length === 0 });
+  const searchValue = useHeaderSearchBar();
   
   // Get unique contact types that exist in the contacts
   const existingContactTypes = Array.from(

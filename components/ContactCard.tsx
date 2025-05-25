@@ -3,11 +3,12 @@ import { Text } from "~/components/nativewindui/Text";
 import { Avatar, AvatarFallback } from "./nativewindui/Avatar";
 import { Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from '~/lib/useColorScheme';
+import { cardContainer } from '~/styles/common';
 
 export const ContactCard = ({ contact, ...props }: { contact: any }) => {
   const { colors } = useColorScheme();
   return (
-    <Pressable {...props} style={{elevation: 8 }} className="shadow-sm rounded-xl p-4 bg-card flex-row items-center">
+    <Pressable {...props} style={{elevation: 8 }} className={cardContainer}>
       <View className="flex-row items-center justify-between w-full">
         <View className="flex-row items-center">
           <Avatar alt={contact.name}>

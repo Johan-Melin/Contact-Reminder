@@ -4,12 +4,13 @@ import { Text } from '~/components/nativewindui/Text';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import { useThemeStore, Theme } from '~/store/themeStore';
+import { cardContainer } from '~/styles/common';
 
 function Card({ children }: { children: React.ReactNode }) {
   const items = React.Children.toArray(children);
   return (
     <SafeAreaView>
-      <View className="rounded-xl border border-border bg-card p-2 px-4 shadow-sm shadow-black/10 dark:shadow-none">
+      <View className={cardContainer}>
         {items.map((child, idx) => (
           <React.Fragment key={idx}>
             {child}

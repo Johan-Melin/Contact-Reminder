@@ -2,6 +2,7 @@ import { View, ScrollView } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { Pressable } from 'react-native';
 import { useColorScheme } from '~/lib/useColorScheme';
+import { cardContainer } from '~/styles/common';
 
 type Tag = {
   name: string;
@@ -33,7 +34,7 @@ export function TagBar({ tags, selectedTag, onSelectTag }: TagBarProps) {
             key={tag.name} 
             onPress={() => onSelectTag(tag)}
           >
-            <View className="rounded-full px-4 py-2 bg-card">
+            <View className={cardContainer}>
               <Text 
                 variant="heading"
                 style={{
