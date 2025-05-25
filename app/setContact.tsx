@@ -145,7 +145,7 @@ export default function Modal() {
                 setDate(new Date());
               }}>
                 <View className="flex-row items-center ml-4">
-                  <Text variant="body" className="bg-gray-200 px-4 py-2 rounded">xx/mm/yyyy</Text>
+                  <Text variant="body" className="bg-gray-200 dark:bg-zinc-900 px-4 py-2 rounded">xx/mm/yyyy</Text>
                 </View>
               </Pressable>
             )}
