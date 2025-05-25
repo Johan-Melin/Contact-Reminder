@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { View, TextInput, Platform, Pressable, SafeAreaView, Switch, Button, ScrollView } from 'react-native';
+import { View, TextInput, Platform, Pressable, SafeAreaView, Switch, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useContactStore, ContactType, contactTypes } from '~/store/contactStore';
+import { TagBar } from '~/components/TagBar';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
 
 import { Button as StyledButton } from '~/components/Button';
@@ -11,7 +12,7 @@ import { Text } from '~/components/nativewindui/Text';
 import { useColorScheme } from '~/lib/useColorScheme';
 
 export default function Modal() {
-  const { isDarkColorScheme } = useColorScheme();
+  const { isDarkColorScheme, colors } = useColorScheme();
   const {contacts, addContact, updateContact, removeContact} = useContactStore(state => ({
     contacts: state.contacts,
     addContact: state.addContact,
@@ -95,7 +96,6 @@ export default function Modal() {
             placeholder={'Enter name'}
             value={name}
             onChangeText={text => { setName(text); setWarning(''); }}
-            autoFocus
           />
           {warning ? (
             <Text variant="body" className="text-red-500 mb-2">{warning}</Text>
@@ -131,42 +131,11 @@ export default function Modal() {
           </View>
           <View className="mb-4">
             <Text variant="heading" className="mb-2">Contact Type</Text>
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ 
-                paddingHorizontal: 4,
-                gap: 8, // Add gap between items
-              }} 
-            >
-              {contactTypes.map(type => {
-                const isSelected = contactType.name === type.name;
-                return (
-                  <Pressable 
-                    key={type.name} 
-                    onPress={() => setContactType(type)}
-                  >
-                    <View 
-                      style={{
-                        backgroundColor: type.color,
-                        borderWidth: isSelected ? 2 : 0,
-                        borderColor: isDarkColorScheme ? 'white' : 'black',
-                      }}
-                      className="rounded-full px-4 py-2 border-white"
-                    >
-                      <Text 
-                        className="text-white"
-                        style={{
-                          fontWeight: isSelected ? 'bold' : 'normal',
-                        }}
-                      >
-                        {type.name}
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <TagBar 
+              tags={contactTypes}
+              selectedTag={contactType.name}
+              onSelectTag={setContactType}
+            />
           </View>
           <StyledButton title="Save" onPress={handleSave} className="w-full"/>
           {isEditing && (
