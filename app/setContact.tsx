@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { View, TextInput, Platform, Pressable, SafeAreaView, Switch, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useContactStore, ContactType, contactTypes } from '~/store/contactStore';
@@ -33,6 +33,17 @@ export default function Modal() {
     editingContact?.lastContact ? new Date(editingContact.lastContact) : null
   );
   const [showDatePicker, setShowDatePicker] = useState(!!date);
+  const nameInputRef = useRef<TextInput>(null);
+
+  // Focus the input when the component mounts if not in edit mode
+  useEffect(() => {
+    if (!isEditing) {
+      const timer = setTimeout(() => {
+        nameInputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isEditing]);
 
   const handleSave = () => {
     if (name.trim() === '') {
@@ -92,11 +103,15 @@ export default function Modal() {
         <View className="p-6">
           <Text variant="heading" className="mb-2">Name</Text>
           <TextInput
+            ref={nameInputRef}
             className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded text-foreground"
             placeholderTextColor="gray"
             placeholder={'Enter name'}
             value={name}
+            autoFocus={!isEditing}
             onChangeText={text => { setName(text); setWarning(''); }}
+            returnKeyType="done"
+            onSubmitEditing={handleSave}
           />
           {warning ? (
             <Text variant="body" className="text-red-500 mb-2">{warning}</Text>
