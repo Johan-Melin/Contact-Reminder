@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { View, TextInput, Platform, Pressable, SafeAreaView, Switch, Button } from 'react-native';
+import { View, TextInput, Platform, Pressable, SafeAreaView, Switch, Button, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useContactStore } from '~/store/contactStore';
-import { useRouter } from 'expo-router';
+import { useContactStore, ContactType, contactTypes } from '~/store/contactStore';
+import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
+
 import { Button as StyledButton } from '~/components/Button';
-import { Stack } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
 import { DatePicker } from '~/components/nativewindui/DatePicker';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { Text } from '~/components/nativewindui/Text';
+import { useColorScheme } from '~/lib/useColorScheme';
 
 export default function Modal() {
+  const { isDarkColorScheme } = useColorScheme();
   const {contacts, addContact, updateContact, removeContact} = useContactStore(state => ({
     contacts: state.contacts,
     addContact: state.addContact,
@@ -24,6 +25,7 @@ export default function Modal() {
   const isEditing = !!id;
   const editingContact = isEditing ? contacts.find(c => c.id === id) : undefined;
   const [name, setName] = useState(initialName || (editingContact?.name ?? ''));
+  const [contactType, setContactType] = useState<ContactType>(editingContact?.contactType ?? contactTypes[0]);
   const [shouldContact, setShouldContact] = useState(editingContact?.shouldContact ?? false);
   const [date, setDate] = useState<Date | null>(
     editingContact?.lastContact ? new Date(editingContact.lastContact) : null
@@ -49,9 +51,9 @@ export default function Modal() {
     }
     
     if (isEditing) {
-      updateContact(id, name, shouldContact, date ?? undefined);
+      updateContact(id, name, shouldContact, contactType, date ?? undefined);
     } else {
-      addContact(name, shouldContact, date ?? undefined);
+      addContact(name, shouldContact, contactType, date ?? undefined);
     }
     setName('');
     setShouldContact(false);
@@ -89,6 +91,7 @@ export default function Modal() {
           <Text variant="heading" className="mb-2">Name</Text>
           <TextInput
             className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded text-foreground"
+            placeholderTextColor="gray"
             placeholder={'Enter name'}
             value={name}
             onChangeText={text => { setName(text); setWarning(''); }}
@@ -125,6 +128,45 @@ export default function Modal() {
                 <Text variant="heading" className="text-blue-500">Set Last Contact Date</Text>
               </Pressable>
             )}
+          </View>
+          <View className="mb-4">
+            <Text variant="heading" className="mb-2">Contact Type</Text>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ 
+                paddingHorizontal: 4,
+                gap: 8, // Add gap between items
+              }} 
+            >
+              {contactTypes.map(type => {
+                const isSelected = contactType.name === type.name;
+                return (
+                  <Pressable 
+                    key={type.name} 
+                    onPress={() => setContactType(type)}
+                  >
+                    <View 
+                      style={{
+                        backgroundColor: type.color,
+                        borderWidth: isSelected ? 2 : 0,
+                        borderColor: isDarkColorScheme ? 'white' : 'black',
+                      }}
+                      className="rounded-full px-4 py-2 border-white"
+                    >
+                      <Text 
+                        className="text-white"
+                        style={{
+                          fontWeight: isSelected ? 'bold' : 'normal',
+                        }}
+                      >
+                        {type.name}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
           <StyledButton title="Save" onPress={handleSave} className="w-full"/>
           {isEditing && (

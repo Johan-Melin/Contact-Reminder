@@ -11,7 +11,7 @@ export const ContactCard = ({ contact, ...props }: { contact: any }) => {
       <View className="flex-row items-center justify-between w-full">
         <View className="flex-row items-center">
           <Avatar alt={contact.name}>
-            <AvatarFallback className="bg-indigo-300">
+            <AvatarFallback style={{backgroundColor: contact.contactType.color}}>
               <Text className="text-2xl text-white">{contact.name.charAt(0).toUpperCase()}</Text>
             </AvatarFallback>
           </Avatar>
