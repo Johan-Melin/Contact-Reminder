@@ -7,11 +7,16 @@ import { useContactStore, contactTypes, type ContactType } from '~/store/contact
 import { Text } from '~/components/nativewindui/Text';
 import { groupContactsByRecency } from '~/lib/contactUtils';
 import { TagBar } from '~/components/TagBar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useColorScheme } from '~/lib/useColorScheme';
 
 export default function Contacts() {
   const { contacts } = useContactStore();
   const searchValue = useHeaderSearchBar();
+  const { colors } = useColorScheme();
+  
+  // State for expanded/collapsed sections
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   
   // Get unique contact types that exist in the contacts
   const existingContactTypes = Array.from(
@@ -51,10 +56,35 @@ export default function Contacts() {
     return matchesSearch && matchesTag;
   });
 
-  // Get grouped and sorted contacts
-  const sections = groupContactsByRecency(filteredContacts);
   const hasSearchResults = filteredContacts.length > 0;
   const hasContacts = contacts.length > 0;
+  
+  // Get grouped and sorted contacts
+  const sections = groupContactsByRecency(filteredContacts);
+  
+  // Initialize all sections as expanded by default
+  useEffect(() => {
+    if (sections.length > 0 && Object.keys(expandedSections).length === 0) {
+      const initialExpandedState = sections.reduce((acc, section) => ({
+        ...acc,
+        [section.title]: true
+      }), {});
+      setExpandedSections(initialExpandedState);
+    }
+  }, [sections]);
+  
+  // Filter sections to only show items for expanded sections
+  const visibleSections = sections.map(section => ({
+    ...section,
+    data: expandedSections[section.title] === false ? [] : section.data
+  }));
+  
+  const toggleSection = (sectionTitle: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionTitle]: !prev[sectionTitle]
+    }));
+  };
 
   return (
     <SafeAreaView className="flex-1">
@@ -70,16 +100,27 @@ export default function Contacts() {
         ) : null}
         {hasContacts ? (
           <SectionList 
-            sections={sections}
+            stickySectionHeadersEnabled={false}
+            sections={visibleSections}
             renderItem={({ item }) => (
               <Link href={`/setContact?id=${item.id}&name=${item.name}`} asChild>
                 <ContactCard contact={item} />
               </Link>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text variant="title3">
-                {title}:
-              </Text>
+              <Pressable 
+                onPress={() => toggleSection(title)}
+                className="flex-row items-center py-2"
+              >
+                <Text variant="title3" className="flex-1">
+                  {title}:
+                </Text>
+                <Ionicons 
+                  name={expandedSections[title] === false ? 'chevron-down' : 'chevron-up'} 
+                  size={20} 
+                  color={colors.foreground} 
+                />
+              </Pressable>
             )}
             keyExtractor={(item) => item.id}
             SectionSeparatorComponent={() => <View className="h-4" />}
