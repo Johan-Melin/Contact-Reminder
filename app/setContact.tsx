@@ -10,6 +10,7 @@ import { DatePicker } from '~/components/nativewindui/DatePicker';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { Text } from '~/components/nativewindui/Text';
 import { useColorScheme } from '~/lib/useColorScheme';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Modal() {
   const { isDarkColorScheme, colors } = useColorScheme();
@@ -116,8 +117,11 @@ export default function Modal() {
                   mode="date"
                   onChange={(ev) => setDate(new Date(ev.nativeEvent.timestamp))}
                 />
-                <Pressable onPress={() => { setShowDatePicker(false); }} className="justify-center">
-                  <Text variant="heading" className="text-blue-500 ml-2">Clear Date</Text>
+                <Pressable onPress={() => { 
+                  setDate(null); 
+                  setShowDatePicker(false); 
+                }} className="justify-center">
+                  <Ionicons name="close-circle" size={20} color="#9ca3af" />
                 </Pressable>
               </View>
             ) : (
@@ -125,7 +129,9 @@ export default function Modal() {
                 setShowDatePicker(true);
                 setDate(new Date());
               }}>
-                <Text variant="heading" className="text-blue-500">Set Last Contact Date</Text>
+                <View className="flex-row items-center ml-4">
+                  <Text variant="body" className="bg-gray-200 px-4 py-2 rounded">xx/mm/yyyy</Text>
+                </View>
               </Pressable>
             )}
           </View>
