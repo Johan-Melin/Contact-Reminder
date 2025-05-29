@@ -9,7 +9,7 @@ export const ContactCard = ({ contact, ...props }: { contact: any }) => {
   const { colors } = useColorScheme();
   return (
     <Pressable {...props} style={{elevation: 8 }} className={cardContainer}>
-      <View className="flex-row items-center justify-between w-full">
+      <View className="flex-row items-center justify-between w-full py-2">
         <View className="flex-row items-center">
           <Avatar alt={contact.name}>
             <AvatarFallback style={{backgroundColor: contact.contactType.color}}>

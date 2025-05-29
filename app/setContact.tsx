@@ -9,11 +9,9 @@ import { Button as StyledButton } from '~/components/Button';
 import { DatePicker } from '~/components/nativewindui/DatePicker';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { Text } from '~/components/nativewindui/Text';
-import { useColorScheme } from '~/lib/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Modal() {
-  const { isDarkColorScheme, colors } = useColorScheme();
   const {contacts, addContact, updateContact, removeContact} = useContactStore(state => ({
     contacts: state.contacts,
     addContact: state.addContact,
