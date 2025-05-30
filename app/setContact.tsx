@@ -102,7 +102,7 @@ export default function Modal() {
           <Text variant="heading" className="mb-2">Name</Text>
           <TextInput
             ref={nameInputRef}
-            className="border border-gray-300 px-4 py-2 mb-2 w-full text-lg rounded text-foreground"
+            className={"border border-border bg-card px-4 py-2 mb-2 w-full text-lg rounded text-foreground"}
             placeholderTextColor="gray"
             placeholder={'Enter name'}
             value={name}
