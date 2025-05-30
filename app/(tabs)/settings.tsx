@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import { useThemeStore, Theme } from '~/store/themeStore';
 import { cardContainer } from '~/styles/common';
+import * as Application from 'expo-application';
 
 function Card({ children }: { children: React.ReactNode }) {
   const items = React.Children.toArray(children);
@@ -25,6 +26,7 @@ function Card({ children }: { children: React.ReactNode }) {
 }
 
 export default function SettingsScreen(): JSX.Element {
+  const appVersion = Application.nativeApplicationVersion; 
   const { setColorScheme } = useColorScheme();
   const { theme, setTheme } = useThemeStore();
   const handlePress = (key: Theme) => {
@@ -64,6 +66,9 @@ export default function SettingsScreen(): JSX.Element {
           </Pressable>
         ))}
       </Card>
+      <View className="flex-1 items-center justify-center mt-4">
+        <Text variant="body" className="text-center text-muted-foreground text-sm">Version: {appVersion}</Text>
+      </View>
     </ScrollView>
   );
 }
