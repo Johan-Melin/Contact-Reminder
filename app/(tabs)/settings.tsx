@@ -1,10 +1,11 @@
-import React, { JSX } from 'react';
-import { ScrollView, View, Pressable, SafeAreaView } from 'react-native';
+import React, { JSX, useEffect } from 'react';
+import { ScrollView, View, Pressable, SafeAreaView, Alert } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import { useThemeStore, Theme } from '~/store/themeStore';
 import { cardContainer } from '~/styles/common';
+import { testNotification } from '~/lib/localNotification';
 
 function Card({ children }: { children: React.ReactNode }) {
   const items = React.Children.toArray(children);
@@ -27,10 +28,16 @@ function Card({ children }: { children: React.ReactNode }) {
 export default function SettingsScreen(): JSX.Element {
   const { setColorScheme } = useColorScheme();
   const { theme, setTheme } = useThemeStore();
+  
   const handlePress = (key: Theme) => {
     setTheme(key);
     setColorScheme(key);
   };
+
+  const handleTestNotification = async () => {
+    await testNotification();
+  };
+
   type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
   const options: { key: Theme; icon: IoniconName; label: string }[] = [
@@ -41,7 +48,7 @@ export default function SettingsScreen(): JSX.Element {
 
   return (
     <ScrollView className="flex-1 p-4">
-      <Text variant="heading">Theme</Text>
+      <Text variant="heading" className="mb-2">Theme</Text>
       <Card>
         {options.map(option => (
           <Pressable
@@ -63,6 +70,27 @@ export default function SettingsScreen(): JSX.Element {
             />
           </Pressable>
         ))}
+      </Card>
+
+      <Text variant="heading" className="mt-8 mb-2">Notifications</Text>
+      <Card>
+        <Pressable
+          onPress={handleTestNotification}
+          className="flex-row items-center py-4"
+        >
+          <Ionicons
+            name="notifications-outline"
+            size={24}
+            style={{ marginRight: 12 }}
+            color="gray"
+          />
+          <Text className="flex-1" variant="body">Send Test Notification</Text>
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color="gray"
+          />
+        </Pressable>
       </Card>
     </ScrollView>
   );

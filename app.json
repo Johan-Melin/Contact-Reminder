@@ -28,7 +28,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.contactreminder",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,6 +40,12 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.contactreminder"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1380cb4e-2283-4cb9-a5be-2b3a9db47b7a"
+      }
     }
   }
 }
