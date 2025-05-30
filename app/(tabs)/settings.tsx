@@ -1,9 +1,11 @@
 import React, { JSX, useEffect } from 'react';
 import { ScrollView, View, Pressable, SafeAreaView, Alert } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
+import { Toggle } from '~/components/nativewindui/Toggle';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import { useThemeStore, Theme } from '~/store/themeStore';
+import { useNotificationStore, type NotificationFrequency } from '~/store/notificationStore';
 import { cardContainer } from '~/styles/common';
 import { testNotification } from '~/lib/localNotification';
 
@@ -34,9 +36,33 @@ export default function SettingsScreen(): JSX.Element {
     setColorScheme(key);
   };
 
-  const handleTestNotification = async () => {
-    await testNotification();
+  const [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
+  const { frequency, setFrequency } = useNotificationStore();
+
+  const handleTestNotification = async (enabled: boolean) => {
+    const success = await testNotification(enabled);
+    if (success) {
+      setNotificationsEnabled(enabled);
+    } else {
+      // If there was an error, revert the toggle
+      setNotificationsEnabled(!enabled);
+    }
   };
+
+  const handleFrequencyChange = (newFrequency: NotificationFrequency) => {
+    setFrequency(newFrequency);
+    // If notifications are enabled, update the schedule with new frequency
+    if (notificationsEnabled) {
+      testNotification(true);
+    }
+  };
+
+  // Initialize the toggle state
+  React.useEffect(() => {
+    // Check if notifications are already scheduled
+    // For now, we'll default to false
+    setNotificationsEnabled(false);
+  }, []);
 
   type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -74,23 +100,55 @@ export default function SettingsScreen(): JSX.Element {
 
       <Text variant="heading" className="mt-8 mb-2">Notifications</Text>
       <Card>
-        <Pressable
-          onPress={handleTestNotification}
-          className="flex-row items-center py-4"
-        >
-          <Ionicons
-            name="notifications-outline"
-            size={24}
-            style={{ marginRight: 12 }}
-            color="gray"
+        <View className="flex-row items-center justify-between py-4">
+          <View className="flex-row items-center">
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              style={{ marginRight: 12 }}
+              color={notificationsEnabled ? '#6366F1' : 'gray'}
+            />
+            <Text variant="body">Enable Notifications</Text>
+          </View>
+          <Toggle
+            value={notificationsEnabled}
+            onValueChange={(value) => handleTestNotification(value)}
           />
-          <Text className="flex-1" variant="body">Send Test Notification</Text>
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color="gray"
-          />
-        </Pressable>
+        </View>
+        
+        {/* Notification Frequency Options */}
+        <View>
+          <Pressable
+            disabled={!notificationsEnabled}
+            onPress={() => handleFrequencyChange('daily')}
+            className={`flex-row items-center py-3 px-4 ${!notificationsEnabled ? 'opacity-50' : ''}`}
+          >
+            <Ionicons
+              name={frequency === 'daily' ? 'radio-button-on' : 'radio-button-off'}
+              size={22}
+              color={!notificationsEnabled ? 'gray' : frequency === 'daily' ? '#6366F1' : 'gray'}
+              style={{ marginRight: 12 }}
+            />
+            <Text variant="body" className={!notificationsEnabled ? 'text-gray-400' : ''}>
+              Daily Reminders
+            </Text>
+          </Pressable>
+          <Pressable
+            disabled={!notificationsEnabled}
+            onPress={() => handleFrequencyChange('weekly')}
+            className={`flex-row items-center py-3 px-4 ${!notificationsEnabled ? 'opacity-50' : ''}`}
+          >
+            <Ionicons
+              name={frequency === 'weekly' ? 'radio-button-on' : 'radio-button-off'}
+              size={22}
+              color={!notificationsEnabled ? 'gray' : frequency === 'weekly' ? '#6366F1' : 'gray'}
+              style={{ marginRight: 12 }}
+            />
+            <Text variant="body" className={!notificationsEnabled ? 'text-gray-400' : ''}>
+              Weekly Reminders
+            </Text>
+          </Pressable>
+        </View>
       </Card>
     </ScrollView>
   );
