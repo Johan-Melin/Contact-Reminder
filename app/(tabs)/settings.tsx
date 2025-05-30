@@ -2,7 +2,7 @@ import React, { JSX } from 'react';
 import { ScrollView, View, Pressable, SafeAreaView } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { Ionicons } from '@expo/vector-icons';
-import { useColorScheme } from 'nativewind';
+import { useColorScheme } from '~/lib/useColorScheme';
 import { useThemeStore, Theme } from '~/store/themeStore';
 import { cardContainer } from '~/styles/common';
 import * as Application from 'expo-application';
@@ -27,11 +27,11 @@ function Card({ children }: { children: React.ReactNode }) {
 
 export default function SettingsScreen(): JSX.Element {
   const appVersion = Application.nativeApplicationVersion; 
-  const { setColorScheme } = useColorScheme();
+  const { colorScheme, setColorScheme } = useColorScheme();
   const { theme, setTheme } = useThemeStore();
   const handlePress = (key: Theme) => {
     setTheme(key);
-    setColorScheme(key);
+    setColorScheme(key === "system" ? colorScheme : key);
   };
   type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
