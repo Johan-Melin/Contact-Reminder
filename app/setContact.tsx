@@ -85,6 +85,7 @@ export default function Modal() {
       {
         options: ['Delete this contact', 'Cancel'],
         cancelButtonIndex: 1,
+        destructiveButtonIndex: 0,
       },
       buttonIndex => {
         if (buttonIndex === 0) {
