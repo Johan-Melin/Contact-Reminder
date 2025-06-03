@@ -29,14 +29,20 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.johanmelin.ping-contact-reminder"
+      "bundleIdentifier": "com.johanmelin.ping_contact_reminder"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.johanmelin.ping-contact-reminder"
+      "package": "com.johanmelin.ping_contact_reminder"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1380cb4e-2283-4cb9-a5be-2b3a9db47b7a"
+      }
     }
   }
 }
