@@ -29,7 +29,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.johanmelin.ping_contact_reminder"
+      "bundleIdentifier": "com.johanmelin.ping-contact-reminder"
     },
     "android": {
       "adaptiveIcon": {
