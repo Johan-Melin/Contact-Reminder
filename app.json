@@ -28,8 +28,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.johanmelin.ping-contact-reminder"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.johanmelin.ping-contact-reminder",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
